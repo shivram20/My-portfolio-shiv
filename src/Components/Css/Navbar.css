@@ -1,0 +1,85 @@
+
+body {
+  font-family: 'Arial', sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+/* Header Styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #BADDEC;
+}
+
+/* Left Section Styling (Logo and Name) */
+.header .left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header .logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 20px;
+  transition: transform 0.3s ease;
+}
+
+.header .logo:hover {
+  transform: scale(1.1);
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Right Section Styling (Navbar Links) */
+.header .right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ns {
+  text-decoration: none;
+  color: black;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 10px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.ns:hover {
+  color: #fff;
+  background-color: black;
+}
+
+.ns:active {
+  background-color: black;
+  transform: translateY(2px);
+}
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .header .right {
+    width: 100%;
+    margin-top: 10px;
+    justify-content: space-around;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    margin-top: 15px;
+  }
+}
