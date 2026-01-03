@@ -2,7 +2,7 @@
   "name": "portfolio",
   "homepage": "https://shivram20.github.io/My-portfolio-shiv",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
