@@ -3,61 +3,62 @@ import "./Css/contactFeedback.css";
 import api from "../api/axios";
 
 function ContactFeedback() {
-  const [activeForm, setActiveForm] = useState("contact");
+  const [formType, setFormType] = useState("contact");
 
-  // CONTACT FORM STATE
-  const [contactData, setContactData] = useState({
+  const [contact, setContact] = useState({
     name: "",
     email: "",
     message: "",
   });
 
-  // FEEDBACK FORM STATE
-  const [feedbackData, setFeedbackData] = useState({
+  const [feedback, setFeedback] = useState({
     name: "",
     rating: "Excellent",
     feedback: "",
   });
 
-  // CONTACT SUBMIT
-  const handleContactSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.post("/api/contact", contactData);
-      if (res.data.message === "success") {
-        alert("Message sent successfully! We will get back to you soon.");
-        setContactData({
-          name: "",
-          email: "",
-          message: "",
-        });
-      } else if ((res.data.message === "emailsended")) {
-        alert("Thank You for Contact Request");
-      } else {
-        alert("server error try again..");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // CONTACT FORM HENDLER..
+  const contactHandler = async (e) => {
+  e.preventDefault();
 
-  // FEEDBACK SUBMIT
-  const handleFeedbackSubmit = async (e) => {
+  const { name, email, message } = contact;
+
+  if (!name.trim() || !email.trim() || !message.trim()) {
+    alert("All fields are required");
+    return;
+  }
+
+  try {
+    const res = await api.post("/contact", contact);
+
+    if (res.status === 201 || res.status === 200) {
+      alert("Thanks for contacting me. Response will be back in 24 hours");
+      setContact({ name: "", email: "", message: "" });
+    }
+  } catch (error) {
+    alert("Something went wrong",error);
+  }
+};
+
+  // FEEDBACK FORM HANDLER..
+  const feedbackHandler = async (e) => {
     e.preventDefault();
-    try {
-      const res = await api.post("/api/feedback", feedbackData);
-      if (res.data.message === "suceess") {
-        alert("Feedback sent successfully! Thanks for your feedback.");
-        setFeedbackData({
-          name: "",
-          rating: "Excellent",
-          feedback: "",
+
+    // SEND FEEDBACK DATA TO API
+    if (!feedback) {
+      alert("All Fields are require");
+    } else {
+      await api
+        .post("/feedback", feedback)
+        .then((res) => {
+          if (res.status == 201) {
+            alert("Thanks For Feedback");
+          }
+        })
+        .catch(() => {
+          alert("Something when wrong");
         });
-      } else {
-        alert("Feedback Not sent Please try again.");
-      }
-    } catch (error) {
-      console.log(error);
+      setFeedback({ name: "", rating: "Excellent", feedback: "" });
     }
   };
 
@@ -66,97 +67,91 @@ function ContactFeedback() {
       <div className="cf-card">
         {/* LEFT PANEL */}
         <div className="cf-left">
-          {activeForm === "contact" ? (
+          {formType === "contact" ? (
             <>
               <h2>Have Feedback?</h2>
-              <button onClick={() => setActiveForm("feedback")}>
+              <button onClick={() => setFormType("feedback")}>
                 FEEDBACK FORM
               </button>
             </>
           ) : (
             <>
               <h2>Need Help?</h2>
-              <button onClick={() => setActiveForm("contact")}>
-                CONTACT US
-              </button>
+              <button onClick={() => setFormType("contact")}>CONTACT US</button>
             </>
           )}
         </div>
 
         {/* RIGHT PANEL */}
         <div className="cf-right">
-          {activeForm === "contact" ? (
-            <>
+          {formType === "contact" ? (
+            <form onSubmit={contactHandler}>
               <h2>Contact Us</h2>
-              <form onSubmit={handleContactSubmit}>
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  value={contactData.name}
-                  onChange={(e) =>
-                    setContactData({ ...contactData, name: e.target.value })
-                  }
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="Your Email"
-                  value={contactData.email}
-                  onChange={(e) =>
-                    setContactData({ ...contactData, email: e.target.value })
-                  }
-                  required
-                />
-                <textarea
-                  placeholder="Your Message"
-                  value={contactData.message}
-                  onChange={(e) =>
-                    setContactData({ ...contactData, message: e.target.value })
-                  }
-                  required
-                ></textarea>
-                <button type="submit">SEND MESSAGE</button>
-              </form>
-            </>
+
+              <input
+                type="text"
+                placeholder="Your Name"
+                value={contact.name}
+                onChange={(e) =>
+                  setContact({ ...contact, name: e.target.value })
+                }
+              />
+
+              <input
+                type="email"
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
+                placeholder="Your Email"
+                value={contact.email}
+                onChange={(e) =>
+                  setContact({ ...contact, email: e.target.value })
+                }
+              />
+
+              <textarea
+                placeholder="Your Message"
+                value={contact.message}
+                onChange={(e) =>
+                  setContact({ ...contact, message: e.target.value })
+                }
+              />
+
+              <button type="submit">SEND MESSAGE</button>
+            </form>
           ) : (
-            <>
+            <form onSubmit={feedbackHandler}>
               <h2>Feedback</h2>
-              <form onSubmit={handleFeedbackSubmit}>
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  value={feedbackData.name}
-                  onChange={(e) =>
-                    setFeedbackData({ ...feedbackData, name: e.target.value })
-                  }
-                  required
-                />
-                <select
-                  onChange={(e) =>
-                    setFeedbackData({ ...feedbackData, rating: e.target.value })
-                  }
-                  value={feedbackData.rating}
-                  required
-                >
-                  <option>Excellent</option>
-                  <option>Good</option>
-                  <option>Average</option>
-                  <option>Poor</option>
-                </select>
-                <textarea
-                  placeholder="Your Feedback"
-                  value={feedbackData.feedback}
-                  onChange={(e) =>
-                    setFeedbackData({
-                      ...feedbackData,
-                      feedback: e.target.value,
-                    })
-                  }
-                  required
-                ></textarea>
-                <button type="submit">SUBMIT FEEDBACK</button>
-              </form>
-            </>
+
+              <input
+                type="text"
+                placeholder="Your Name"
+                value={feedback.name}
+                onChange={(e) =>
+                  setFeedback({ ...feedback, name: e.target.value })
+                }
+              />
+
+              <select
+                value={feedback.rating}
+                onChange={(e) =>
+                  setFeedback({ ...feedback, rating: e.target.value })
+                }
+              >
+                <option>Excellent</option>
+                <option>Good</option>
+                <option>Average</option>
+                <option>Poor</option>
+              </select>
+
+              <textarea
+                placeholder="Your Feedback"
+                value={feedback.feedback}
+                onChange={(e) =>
+                  setFeedback({ ...feedback, feedback: e.target.value })
+                }
+              />
+
+              <button type="submit">SUBMIT FEEDBACK</button>
+            </form>
           )}
         </div>
       </div>
